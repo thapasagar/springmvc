@@ -1,7 +1,6 @@
 # Spring MVC demo w/ Hibernate, Webservice & WebLogic
-Spring mvc with webservice
 
-Calvin Klien Rewards Program basic login and Registration functionality
+Simple Login and Registration functionality WebApp for Calvin Klein Rewards Program 
 
 Technology Stack Used
   - HTML5, CSS, JS w/Ajax
