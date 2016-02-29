@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+  		http://www.springframework.org/schema/beans/spring-beans.xsd 
+   		http://www.springframework.org/schema/tx 
+   		http://www.springframework.org/schema/tx/spring-tx.xsd
+   		http://www.springframework.org/schema/jee 
+   		http://www.springframework.org/schema/jee/spring-jee.xsd
+   		http://www.springframework.org/schema/context 
+  		http://www.springframework.org/schema/context/spring-context.xsd
+  		http://cxf.apache.org/jaxws 
+  		http://cxf.apache.org/schemas/jaxws.xsd">
+
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!-- <context:component-scan base-package="com.bootcamp.ektha.rewardsprogram.service" 
+		/> -->
+	<context:component-scan base-package="com.bootcamp.ektha.rewardsprogram.dao" />
+
+	<bean id="userDAO" class="com.bootcamp.ektha.rewardsprogram.dao.UserDAOImpl" />
+	<bean id="memberDAO" class="com.bootcamp.ektha.rewardsprogram.dao.MemberDAOImpl" />
+	<bean id="storeDAO" class="com.bootcamp.ektha.rewardsprogram.dao.StoreDAOImpl" />
+
+	<bean id="userServices"
+		class="com.bootcamp.ektha.rewardsprogram.service.UserServicesImpl">
+		<property name="userDAO" ref="userDAO" />
+	</bean>
+
+	<bean id="storeService"
+		class="com.bootcamp.ektha.rewardsprogram.service.StoreServiceImpl">
+		<property name="storeDAO" ref="storeDAO" />
+	</bean>
+
+
+	<bean id="memberService"
+		class="com.bootcamp.ektha.rewardsprogram.service.MemberServiceImpl">
+		<property name="memberDAO" ref="memberDAO" />
+	</bean>
+
+	<bean id="usernameTokenCallback" class="com.bootcamp.ektha.rewardsprogram.service.PasswordCallback" />
+	
+	<jaxws:endpoint id="storeList" implementor="#storeService"
+		address="/StoreList">
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+				<constructor-arg>
+					<map>
+						<entry key="action" value="UsernameToken" />
+						<entry key="passwordType" value="PasswordDigest" />
+						<entry key="passwordCallbackRef">
+							<ref bean="storeList" />
+						</entry>
+					</map>
+				</constructor-arg>
+			</bean>
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+
+
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="jdbc/dbpool" />
+		<property name="resourceRef"> <value>true</value> </property>
+	</bean>
+
+	<!-- <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+		<property name="jndiName" value="CKBDPOOL" /> <property name="jndiEnvironment"> 
+		<props> <prop key="java.naming.factory.initial">weblogic.jndi.WLInitialContextFactory</prop> 
+		<prop key="java.naming.provider.url">t3://localhost:7001</prop> </props> 
+		</property> </bean> -->
+
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.bootcamp.ektha.rewardsprogram.entity" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<tx:annotation-driven />
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+</beans>

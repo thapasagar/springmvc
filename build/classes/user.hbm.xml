@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+ 
+<hibernate-mapping>
+    <class name="com.bootcamp.ektha.rewardsprogram.entity.User" table="LOGIN_INFO">
+        <id name="username" type="java.lang.String">
+            <column name="USERNAME" />
+        </id>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" />
+        </property>
+
+    </class>
+</hibernate-mapping>
