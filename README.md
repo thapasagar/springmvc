@@ -1,4 +1,4 @@
-# springmvc demo w/ hibernate and webservice
+# Spring MVC demo w/ Hibernate, Webservice & WebLogic
 Spring mvc with webservice
 
 Calvin Klien Rewards Program basic login and Registration functionality
